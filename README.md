@@ -118,7 +118,7 @@ Phun::start();
 
 Cette portion de code va échouer aussi, car le chemin doit être impérativement UNIQUE ! (on peut créer une URL basée sur le même chemin, mais il faut impérativement des variables GET pour que PHUN puisse faire la différence). Nous allons donc rajouter un chemin à notre second service :
 
-```
+```php
 <?php
 require 'configuration.php';
 require 'core/phun.php';
@@ -185,3 +185,74 @@ Phun::start();
 ```
 
 C'est assez commode de manipuler directement un service, cela permet de pas devoir retenir les URL's et à priori, si un lien interne casse, le projet devrait crasher :D
+
+L'usage de "use" permet de passer le service de le "binding" de la lambda, il ne faut oublier de passer les services en argument à use chaque fois que l'ont veut chainer des modules entre eux!
+
+### Variables GET
+Faire un service par personne que je connais pour dire bonjour c'est un peu nul. Nous allons ajouter à notre service un paramètre GET prénom, voici la modification du code à effectuer:
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+$hello_quelqun = new Service(
+    ["hello"],
+    [Parameter::get('prenom', 'string')]
+);
+
+$hello->bindWith(
+    function($get, $post) use ($hello_quelqun) {
+        echo '<h1>Hello les gens (et le world)!</h1>';
+        echo $hello_quelqun->link(
+            'Dire coucou à Xavier!',
+            ['prenom' => 'Xavier'],
+            ["style" => "background-color:red;color:white;padding:8px;"] 
+        );
+    }
+);
+
+$hello_quelqun->bindWith(
+    function($get, $post) use ($hello) {
+       echo '<h1>Hello '.$get['prenom'].'!</h1>';
+        echo $hello->link(
+            'Dire coucou au monde!',
+            [],
+            ["style" => "background-color:green;color:white;padding:8px;"] 
+        );
+    }
+);
+
+
+
+Phun::start();
+?>
+```
+
+Plusieurs modifications sont à effectuer !
+
+*   Premièrement, il faut ajouter un deuxième argument qui prendra la liste des
+des paramètres. Dans laquelle on place un paramètre GET qui est caractérisés
+par un nom ET un type. (Les types possibles sont : `string`, `int` ,`float`, `char` et `bool`. Le type le plus permissif et évidemment polymorphe est le type String, qui fonctionnera un peu tout le temps. Par contre, la cohérence des types est obligatoire pour qu'un contrat avec un service soit effectué. Ce qui est assez pratique car ça n'oblige pas à convertir les variables de l'URL, PHUN le fait pour vous :D
+
+*   Ensuite, il fut modifier le lien et cette fois-ci, lui donner le paramètre GET attendu, sous forme de tableau associatif.
+
+*   Pour finir, on exploite, dans la vue du service `hello_quelqun` la variables
+`$get['prenom']` qui contiendra le prénom envoyé en argument. 
+
+> TADAM, si jamais le type de l'expression est mauvais quand il est passé, ou que le nombre de paramètres est donné, l'application crashera car le contrat ne sera pas respecté !
+
+Maintenant quand on clique sur notre lien on arrive à `hello/prenom=Xavier`. Ce qui est cool (si si), c'est qu'on peut modifier la valeur de prénom directement dans l'url !
+
+Par contre, je trouve que le "prenom=" apparent est un peu moche. Donc je peux ajouter un troisième argument à mon paramètre qui prend un booléen pour enjoliver l'URL :D
+
+```php
+$hello_quelqun = new Service(
+    ["hello"],
+    [Parameter::get('prenom', 'string', true)]
+);
+
+```
+
+Maintenant, on peut accéder à cette SUPERBE page via l'url `hello/LEPRENOMKETUVEUX`.
