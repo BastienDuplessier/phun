@@ -87,7 +87,7 @@ class Service {
      * @param type mime : the type of the returned document
      * @see parameters.php
      */
-    public function __construct($path, $args = [], $mime = NULL) {
+    public function __construct($path = [], $args = [], $mime = NULL) {
         $this->path = $path;
         Service::checkArguments($args);
         $this->arguments = $args;
@@ -224,12 +224,16 @@ class Service {
      * execute the view of the service
      */
     public function render() {
+        if ($this->controller === NULL) {
+            throw new UnbindedService("The service is not bound to a view");
+        }
         if ($this->type_mime !== NULL && is_string($this->type_mime)) {
             header("Content-Type: ".$this->type_mime);
         }
         return $this->controller->__invoke(
             $_SESSION['get_args'], $_SESSION['post_args']
         );
+
     }
 }
 

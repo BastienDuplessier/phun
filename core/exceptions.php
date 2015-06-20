@@ -26,4 +26,5 @@ class NoPotentialService extends CustomException {}
 class UnCallableProperty extends CustomException {}
 class UnLinkableService extends CustomException {}
 class NotAllParameters extends CustomException {}
+class UnbindedService extends CustomException {}
 ?>

@@ -27,4 +27,44 @@ Actuellement, PHUN repose essentiellement sur deux concepts fondamentaux :
 ## Installation
 `git clone https://github.com/xvw/phun` sur une machine ayant Apache devrait suffire.
 
-## Hello World
+## Structure d'un projet
+Le point d'entrée de l'application est le fichier `index.php`. 
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+// Ici vous mettez ce que vous voulez.
+
+Phun::start();
+?>
+```
+
+Pour plus de swagg vous pouvez créer une include vers ce que vous voulez.
+Si vous testez ce projet, il devrait afficher une belle erreur. 
+
+### Un Hello World
+L'erreur en question est qu'il n'existe aucun service satisfaisant le contrat initial. Soit, pas d'éléments en plus dans l'URL et pas de paramètres GET et POST... Sans plus attendre, crééons notre premier service !
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+
+
+Phun::start();
+?>
+```
+
+Maintenant, on a une belle erreur qui nous indique que le service trouvé n'est pas lié à une vue. Il faut donc le lier :D.
+En effet, PHUN propose deux phases pour la création d'un service en deux temps.
+
+*    On défini le service (son chemin, ses variables GET et POST);
+*    On le lie à une vue.
+
+Cette segmentation en deux points (honteusement inspirée (mal) de Ocisgen) permet d'utiliser les services dans les vues (et nous verrons pourquoi/comment un peu plus bas).
+
+La liaison d'une vue est du simple PHP/HTML via une lambda: 
