@@ -255,4 +255,6 @@ $hello_quelqun = new Service(
 
 ```
 
-Maintenant, on peut accéder à cette SUPERBE page via l'url `hello/LEPRENOMKETUVEUX`.
+Maintenant, on peut accéder à cette SUPERBE page via l'url `hello/LEPRENOMKETUVEUX`. Un autre avantage est que si on décide de changer l'URL de pages, il ne faut pas aller les modifier partout où elles ont étés utilisées :D
+
+### to be continuou-haide
