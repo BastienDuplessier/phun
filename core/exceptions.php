@@ -15,7 +15,7 @@ class CustomException extends Exception {
         parent::__construct($trace, $code, $e);
     }
     public function __toString() {
-        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        return '<h1>'.get_class($this) . ": [{$this->code}]</h1> {$this->message}\n";
     }
 }
 

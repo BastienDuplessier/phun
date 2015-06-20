@@ -41,14 +41,19 @@ ini_set("display_errors", 1);
 
 class Phun {
     public static function start() {
-        $current = Service::findCurrent();
-        $current->render();
+        try {
+            $current = Service::findCurrent();
+            $current->render();
+        } catch (Exception $e) {
+            die($e);
+        }
     }
 }
 
 require 'exceptions.php';
 require 'parameters.php';
 require 'url.php';
+require 'html5.php';
 require 'services.php';
 
 

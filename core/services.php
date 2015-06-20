@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  *  Provide a service description
  *  
@@ -11,6 +9,7 @@
 
 class Service {
 
+    
     public static $storage = [];
     protected $uid;
     protected $path;
@@ -160,9 +159,9 @@ class Service {
             throw new UnLinkableService("this service is not linkable");
         }
         $this->checkParams($params);
-        $uri = $this->uri($params);
+        $args["href"] = $this->uri($params);
         $attributes = $this->makeHtmlAttributes($args);
-        return '<a '.$attributes.' href="'.$uri.'">'.$content.'</a>';
+        return Html5\a($args, $content);
     }
     
     // Build the HTML attributes of the link
@@ -217,7 +216,20 @@ class Service {
      * @return true or false
      */
     public function isPotentialCandidate(){
-        return Url::concordingWith($this);
+        return Url\concordingWith($this);
+    }
+
+    /**
+     * Write a formlet based on the current service
+     * @param Associative array [name => html str]
+     * @param Method ("GET" or "POST")
+     * @return form as an HTML string
+     */
+    public function formlet($elts, $method = "POST") {
+        $result = "<form method='$method' action='".$this->uri()."'>";
+        foreach ($elts as $key => $value) {
+            
+        }
     }
 
     /**
