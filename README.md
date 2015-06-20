@@ -67,4 +67,119 @@ En effet, PHUN propose deux phases pour la création d'un service en deux temps.
 
 Cette segmentation en deux points (honteusement inspirée (mal) de Ocisgen) permet d'utiliser les services dans les vues (et nous verrons pourquoi/comment un peu plus bas).
 
-La liaison d'une vue est du simple PHP/HTML via une lambda: 
+La liaison d'une vue est du simple PHP/HTML via une lambda:
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+
+$hello->bindWith(
+    function($get, $post) {
+        echo '<h1>Hello les gens (et le world)!</h1>';
+    }
+);
+
+Phun::start();
+?>
+```
+
+Cette fois-ci, ça fonctionne !
+
+Créons maintenant un second service, qui lui se chargera de dire bonjour à un prénom choisi au hasard, `Xavier`.
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+$hello_xavier = new Service();
+
+$hello->bindWith(
+    function($get, $post) {
+        echo '<h1>Hello les gens (et le world)!</h1>';
+    }
+);
+
+$hello_xavier->bindWith(
+    function($get, $post) {
+        echo '<h1>Hello Xavier!</h1>';
+    }
+);
+
+
+
+Phun::start();
+?>
+```
+Cette portion de code va échouer aussi, car le chemin doit être impérativement UNIQUE ! (on peut créer une URL basée sur le même chemin, mais il faut impérativement des variables GET pour que PHUN puisse faire la différence). Nous allons donc rajouter un chemin à notre second service :
+
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+$hello_xavier = new Service(["hello", "Xavier"]);
+
+$hello->bindWith(
+    function($get, $post) {
+        echo '<h1>Hello les gens (et le world)!</h1>';
+    }
+);
+
+$hello_xavier->bindWith(
+    function($get, $post) {
+        echo '<h1>Hello Xavier!</h1>';
+    }
+);
+
+
+
+Phun::start();
+?>
+```
+Maintenant ça fonctionne! On peut accéder à notre page via l'url `hello/Xavier`!
+
+####Liens entre les pages
+Comme les services ont étés définis avant mes liaisons, je peux utiliser un service au sein d'une page. Imaginons par exemple que je veuille faire, sur ma page d'accueil un lien vers la page `hello/Xavier` et sur ma page `hello/Xavier`, un lien vers ma page d'accueil, je peux me servir de `$service->link("content", [args], [attributes])`. Le "content" est le texte du lien, "args" permet de passer un tableau contenant les variables GET à lier à l'URL (ici on n'en a pas besoin !), et les attributs permet de lier des attributs HTML au lien. Par exemple :
+
+```php
+<?php
+require 'configuration.php';
+require 'core/phun.php';
+
+$hello = new Service();
+$hello_xavier = new Service(["hello", "Xavier"]);
+
+$hello->bindWith(
+    function($get, $post) use ($hello_xavier) {
+        echo '<h1>Hello les gens (et le world)!</h1>';
+        echo $hello_xavier->link(
+            'Dire coucou à Xavier!',
+            [],
+            ["style" => "background-color:red;color:white;padding:8px;"] 
+        );
+    }
+);
+
+$hello_xavier->bindWith(
+    function($get, $post) use ($hello) {
+        echo '<h1>Hello Xavier!</h1>';
+        echo $hello->link(
+            'Dire coucou au monde!',
+            [],
+            ["style" => "background-color:green;color:white;padding:8px;"] 
+        );
+    }
+);
+
+
+
+Phun::start();
+?>
+```
+
+C'est assez commode de manipuler directement un service, cela permet de pas devoir retenir les URL's et à priori, si un lien interne casse, le projet devrait crasher :D
