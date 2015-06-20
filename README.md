@@ -115,8 +115,10 @@ $hello_xavier->bindWith(
 Phun::start();
 ?>
 ```
+
 Cette portion de code va échouer aussi, car le chemin doit être impérativement UNIQUE ! (on peut créer une URL basée sur le même chemin, mais il faut impérativement des variables GET pour que PHUN puisse faire la différence). Nous allons donc rajouter un chemin à notre second service :
 
+```
 <?php
 require 'configuration.php';
 require 'core/phun.php';
