@@ -21,4 +21,10 @@ Actuellement, PHUN repose essentiellement sur deux concepts fondamentaux :
 *    **Let it crash**:
     Plutôt que d'évaluer tous les cas de figures possible, on laisse l'application planter au plus vite si elle ne respecte pas ses contrats
 
-*    **Une application comme une collection de services**:
+*    **Une application comme une collection de services**: Dans PHUN, on décrit des services qui sont caractérisés par leurs paramètres (GET et POST).
+(Inspiration Ocisgen, il le faut !)
+
+## Installation
+`git clone https://github.com/xvw/phun` sur une machine ayant Apache devrait suffire.
+
+## Hello World
