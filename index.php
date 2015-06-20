@@ -1,32 +1,32 @@
 <?php
+
 require 'configuration.php';
 require 'core/phun.php';
 
-$hello = new Service();
-$hello_quelqun = new Service(
+$hello = new \Service();
+$hello_quelqun = new \Service(
     ["hello"],
-    [Parameter::get('prenom', 'string', true)]
+    [\Parameter::get('prenom', 'string', true)]
 );
 
-
-use Html5 as D;
+use Html5 as t;
 
 function page($body) {
     echo
-        D\html(
+        t\html(
             [
-                D\head([
-                    D\title([], ["Test"]),
-                    D\meta(["charset" => "utf-8"], []),
+                t\head([
+                    t\title([], ["Test"]),
+                    t\meta(["charset" => "utf-8"], []),
                 ]),
-                D\body([], $body)
+                t\body([], $body)
             ]);
 }
 
 
 $hello->bindWith(
     function($get, $post) use ($hello_quelqun) {
-        page([ D\h1([], ["Salut le monde!"]),
+        page([ t\h1([], ["Salut le monde!"]),
                $hello_quelqun->link(
                    ["Dire coucou à Xavier"],
                     ["prenom" => "xavier"],
@@ -39,7 +39,7 @@ $hello->bindWith(
 
 $hello_quelqun->bindWith(
     function($get, $post) use ($hello) {
-        page([ D\h1([], ["Salut ".$get['prenom']]),
+        page([ t\h1([], ["Salut ".$get['prenom']]),
                $hello->link(
                    ["Dire coucou au monde"],
                    [],
@@ -53,5 +53,5 @@ $hello_quelqun->bindWith(
 
 
 
-Phun::start();
+\Phun::start();
 ?>

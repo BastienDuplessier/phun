@@ -52,8 +52,8 @@ class Phun {
 
 require 'exceptions.php';
 require 'parameters.php';
-require 'url.php';
 require 'html5.php';
+require 'url.php';
 require 'services.php';
 
 
